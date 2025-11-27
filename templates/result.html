@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Result - {{ question.title }}</title>
+    <!-- CodeMirror for result page too -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; max-width: 1200px; margin: auto; background: #f8f9fa; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 3px solid #48bb78; padding-bottom: 10px; }
+        h2 { padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; font-size: 28px; }
+        .pass { background: #d4f4e2; color: #1a5f37; border: 3px solid #48bb78; }
+        .fail { background: #fed7d7; color: #c53030; border: 3px solid #f56565; }
+        .CodeMirror { height: 350px !important; border: 2px solid #e2e8f0; border-radius: 8px; }
+        pre { background: #2d3748; color: #e2e8f0; padding: 15px; border-radius: 8px; border-left: 5px solid #ed8936; 
+              margin: 10px 0; font-family: monospace; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 14px; }
+        th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; vertical-align: top; }
+        th { background: #4299e1; color: white; font-weight: bold; }
+        tr:nth-child(even) { background: #f7fafc; }
+        .status-pass { background: #48bb78; color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; }
+        .status-fail { background: #f56565; color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; }
+        button, a.button { background: #48bb78; color: white; padding: 12px 20px; text-decoration: none; 
+                          border: none; cursor: pointer; border-radius: 6px; margin: 10px 5px 0 0; display: inline-block; }
+        button:hover, a.button:hover { background: #38a169; }
+        .section { background: #f7fafc; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 5px solid #4299e1; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>{{ question.title }}</h1>
+
+    {% if result_data.all_passed %}
+        <h2 class="pass">🎉 All Tests Passed! Perfect Solution! ✅</h2>
+    {% else %}
+        <h2 class="fail">🔧 Some tests failed. Debug & retry!</h2>
+    {% endif %}
+
+    <div class="section">
+        <h3>🧪 Sample Test Result</h3>
+        <p><strong>Sample Input:</strong></p>
+        <pre>{{ question.sample_input }}</pre>
+        <p><strong>Your Output:</strong></p>
+        <pre>{{ sample_run_output }}</pre>
+    </div>
+
+    <div class="section">
+        <h3>🔍 Hidden Test Results</h3>
+        <table>
+            <tr>
+                <th>Test #</th>
+                <th>Input</th>
+                <th>Expected</th>
+                <th>Your Output</th>
+                <th>Status</th>
+            </tr>
+            {% for test in result_data.test_results %}
+            <tr>
+                <td style="font-weight: bold; width: 70px;">{{ test.id }}</td>
+                <td><pre>{{ test.input }}</pre></td>
+                <td><pre>{{ test.expected_output }}</pre></td>
+                <td><pre>{{ test.actual_output }}</pre></td>
+                <td>
+                    {% if test.passed %}
+                        <span class="status-pass">✅ PASS</span>
+                    {% else %}
+                        <span class="status-fail">❌ FAIL</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>✏️ Edit your code (Syntax Highlighting):</h3>
+        <form method="post" action="/">
+            <textarea id="resultEditor" name="code">{{ user_code }}</textarea><br>
+            <button type="submit">🔄 Run Again</button>
+            <a href="/" class="button">🏠 New Problem</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Initialize CodeMirror on result page too
+    var resultEditor = CodeMirror.fromTextArea(document.getElementById('resultEditor'), {
+        mode: 'python',
+        lineNumbers: true,
+        theme: 'default',
+        indentUnit: 4,
+        tabSize: 4,
+        matchBrackets: true,
+        autoCloseBrackets: true
+    });
+</script>
+</body>
+</html>

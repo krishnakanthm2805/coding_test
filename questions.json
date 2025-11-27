@@ -1,0 +1,8 @@
+{
+  "title": "Sum of Two Numbers",
+  "description": "Given two integers, read them from input and print their sum.",
+  "input_format": "Two integers a and b separated by space.",
+  "output_format": "Single integer: a + b.",
+  "sample_input": "2 3",
+  "sample_output": "5"
+}
